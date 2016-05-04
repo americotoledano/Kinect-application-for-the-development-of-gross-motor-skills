@@ -1,1 +1,1 @@
-# Kinect-application-for-the-development-of-gross-motor-skills
+# Kinect application for the-development of gross motor skills

@@ -1,0 +1,31 @@
+#g++ launcher.cpp Database.cpp -o app `pkg-config --cflags --libs gtk+-3.0` -lsqlite3
+
+CFLAGS=`pkg-config --cflags gtk+-3.0`
+LDFLAGS=`pkg-config --libs gtk+-3.0` -lsqlite3
+
+SRC_DIR = ./src
+OBJECT_DIR = ./build
+BIN_DIR = ./bin
+
+
+all: launcher
+
+#mkdir -p ./bin/obj/
+
+
+#g++ -o launcher launcher.o Database.o -lsqlite3 `pkg-config --libs gtk+-3.0`
+launcher: $(OBJECT_DIR)/Database.o $(OBJECT_DIR)/launcher.o
+	mkdir -p $(BIN_DIR)
+	g++ -o $(BIN_DIR)/launcher $(OBJECT_DIR)/Database.o $(OBJECT_DIR)/launcher.o $(LDFLAGS)
+
+$(OBJECT_DIR)/launcher.o: $(SRC_DIR)/launcher.cpp
+	mkdir -p $(OBJECT_DIR)
+	g++ -c $(SRC_DIR)/launcher.cpp -o $(OBJECT_DIR)/launcher.o $(CFLAGS)
+
+$(OBJECT_DIR)/Database.o: $(SRC_DIR)/Database.cpp $(SRC_DIR)/Database.h
+	mkdir -p $(OBJECT_DIR)
+	g++ -c $(SRC_DIR)/Database.cpp -o $(OBJECT_DIR)/Database.o
+
+clean:
+	rm -f $(OBJECT_DIR)/Database.o $(OBJECT_DIR)/launcher.o
+	rm -f $(BIN_DIR)/launcher

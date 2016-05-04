@@ -1,0 +1,36 @@
+CFLAGS=-I../OpenNI-Linux-x86-2.2/Include -I../opencv-2.4.8/include/opencv -I../libfreenect-master/include -I../NiTE-Linux-x86-2.2/Include -Wall
+
+LDFLAGS=-L../NiTE-Linux-x86-2.2/Redist -L../OpenNI-Linux-x86-2.2/Redist -L../libfreenect-master/build/lib
+
+SOURCE_DIR = ./src
+OBJECT_DIR = ./build
+BIN_DIR = ./bin
+
+
+all: keyboard
+
+keyboard: $(OBJECT_DIR)/Kinect.o $(OBJECT_DIR)/Database.o $(OBJECT_DIR)/Graphics.o $(OBJECT_DIR)/keyboard.o
+	mkdir -p $(BIN_DIR)
+	g++ -o $(BIN_DIR)/keyboard $(OBJECT_DIR)/Kinect.o $(OBJECT_DIR)/Database.o $(OBJECT_DIR)/Graphics.o $(OBJECT_DIR)/keyboard.o $(LDFLAGS) `pkg-config --cflags --libs opencv` -lOpenNI2 -lfreenect -lfreenect_sync -lNiTE2 -lsqlite3 -lcairo
+
+
+$(OBJECT_DIR)/keyboard.o: $(SOURCE_DIR)/keyboard.cpp
+	mkdir -p $(OBJECT_DIR)
+	g++ -c $(SOURCE_DIR)/keyboard.cpp -o $(OBJECT_DIR)/keyboard.o $(CFLAGS)
+
+$(OBJECT_DIR)/Kinect.o: $(SOURCE_DIR)/Kinect.cpp $(SOURCE_DIR)/Kinect.h
+	mkdir -p $(OBJECT_DIR)
+	g++ -c $(SOURCE_DIR)/Kinect.cpp -o $(OBJECT_DIR)/Kinect.o $(CFLAGS)
+
+$(OBJECT_DIR)/Database.o: $(SOURCE_DIR)/Database.cpp $(SOURCE_DIR)/Database.h
+	mkdir -p $(OBJECT_DIR)
+	g++ -c $(SOURCE_DIR)/Database.cpp -o $(OBJECT_DIR)/Database.o $(CFLAGS)
+
+$(OBJECT_DIR)/Graphics.o: $(SOURCE_DIR)/Graphics.cpp $(SOURCE_DIR)/Graphics.h
+	mkdir -p $(OBJECT_DIR)
+	g++ -c $(SOURCE_DIR)/Graphics.cpp -o $(OBJECT_DIR)/Graphics.o $(CFLAGS)
+
+clean:
+	rm -f $(OBJECT_DIR)/Kinect.o $(OBJECT_DIR)/Database.o $(OBJECT_DIR)/Graphics.o $(OBJECT_DIR)/keyboard.o
+	rm -f $(BIN_DIR)/keyboard
+
